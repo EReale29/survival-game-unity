@@ -9,6 +9,9 @@ jobs:
   build:
     name: Check Unity Compilation
     runs-on: ubuntu-latest
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      UNITY_LICENSE_FILE: ${{ secrets.UNITY_LICENSE_FILE }}
 
     steps:
       - name: Checkout
@@ -22,11 +25,16 @@ jobs:
             **/Library
           key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/manifest.json') }}
 
+      - name: Verify Unity license secrets
+        run: |
+          if [ -z "${UNITY_LICENSE:-}" ] && [ -z "${UNITY_LICENSE_FILE:-}" ]; then
+            echo "::error::Unity license is not provided. Set UNITY_LICENSE (recommended) or UNITY_LICENSE_FILE secret to allow CI builds." >&2
+            exit 1
+          fi
+
       - name: Unity Builder
         uses: game-ci/unity-builder@v4
         with:
           unityVersion: 2022.3.15f1
           targetPlatform: StandaloneWindows64
           buildMethod: Assets.Editor.BuildCheck.PerformBuildCheck
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
