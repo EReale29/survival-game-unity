@@ -24,9 +24,10 @@ jobs:
           key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/manifest.json') }}
 
       - name: Verify Unity license secrets
+        shell: bash
         run: |
-          if [ -z "${UNITY_LICENSE:-}" ] && [ -z "${UNITY_LICENSE_FILE:-}" ]; then
-            echo "::error::Unity license is not provided. Set UNITY_LICENSE (recommended) or UNITY_LICENSE_FILE secret to allow CI builds." >&2
+          if [[ -z "${UNITY_LICENSE:-}" && -z "${UNITY_LICENSE_FILE:-}" ]]; then
+            printf '::error::Unity license is not provided. Set UNITY_LICENSE (recommended) or UNITY_LICENSE_FILE secret to allow CI builds.\n' >&2
             exit 1
           fi
 
