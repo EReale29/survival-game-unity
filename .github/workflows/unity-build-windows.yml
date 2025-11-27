@@ -26,6 +26,8 @@ jobs:
         with:
           unityVersion: 2022.3.15f1
           targetPlatform: StandaloneWindows64
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
       - name: Upload Windows Build Artifact
         uses: actions/upload-artifact@v3
