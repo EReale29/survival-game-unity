@@ -9,6 +9,9 @@ jobs:
   build:
     name: Check Unity Compilation
     runs-on: ubuntu-latest
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      UNITY_LICENSE_FILE: ${{ secrets.UNITY_LICENSE_FILE }}
 
     steps:
       - name: Checkout
@@ -21,6 +24,10 @@ jobs:
             ~/.local/share/unity3d
             **/Library
           key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/manifest.json') }}
+
+      - name: Verify Unity license secrets
+        if: ${{ env.UNITY_LICENSE == '' && env.UNITY_LICENSE_FILE == '' }}
+        run: printf '::error::Unity license is not provided. Set UNITY_LICENSE (recommended) or UNITY_LICENSE_FILE secret to allow CI builds.\n' >&2 && exit 1
 
       - name: Unity Builder
         uses: game-ci/unity-builder@v4
