@@ -1,0 +1,30 @@
+name: Unity - Check Build
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Check Unity Compilation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Unity packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.local/share/unity3d
+            **/Library
+          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/manifest.json') }}
+
+      - name: Unity Builder
+        uses: game-ci/unity-builder@v4
+        with:
+          unityVersion: 2022.3.15f1
+          targetPlatform: StandaloneWindows64
+          buildMethod: Assets.Editor.BuildCheck.PerformBuildCheck
