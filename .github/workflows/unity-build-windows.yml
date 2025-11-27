@@ -25,9 +25,7 @@ jobs:
 
       - name: Verify Unity license secrets
         if: ${{ env.UNITY_LICENSE == '' && env.UNITY_LICENSE_FILE == '' }}
-        run: |
-          printf '::error::Unity license is not provided. Set UNITY_LICENSE (recommended) or UNITY_LICENSE_FILE secret to allow CI builds.\n' >&2
-          exit 1
+        run: printf '::error::Unity license is not provided. Set UNITY_LICENSE (recommended) or UNITY_LICENSE_FILE secret to allow CI builds.\n' >&2 && exit 1
 
       - name: Unity Builder
         id: unityBuilder
